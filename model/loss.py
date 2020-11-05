@@ -2,16 +2,16 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-BCEWithLogitsLoss = nn.BCEWithLogitsLoss()
+BCEWithLogitsLoss = nn.BCEWithLogitsLoss(reduction = 'mean')
 Relu = nn.ReLU()
 
 def standard_adversarial_loss(which_model, out_fake  = None, out_real = None):
 	if 'D' in which_model:
-		loss_fake = BCEWithLogitsLoss(out_fake, torch.zeros_like(out_fake), reduction = 'mean')
-		loss_real = BCEWithLogitsLoss(out_real, torch.ones_like(out_fake), reduction = 'mean')
+		loss_fake = BCEWithLogitsLoss(out_fake, torch.zeros_like(out_fake))
+		loss_real = BCEWithLogitsLoss(out_real, torch.ones_like(out_real))
 		final_loss = (loss_fake + loss_real)/2
 	elif 'G' in which_model:
-		loss_fake = BCEWithLogitsLoss(out_fake, torch.ones_like(out_fake), reduction = 'mean')
+		loss_fake = BCEWithLogitsLoss(out_fake, torch.ones_like(out_fake))
 		final_loss = loss_fake
 	return final_loss
 

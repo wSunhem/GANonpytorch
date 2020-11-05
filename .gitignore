@@ -1,2 +1,5 @@
 celeba/
+model_output/
 Dockerfile
+*.sh
+*.yaml
