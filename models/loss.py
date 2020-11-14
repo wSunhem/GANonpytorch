@@ -25,3 +25,18 @@ def hinge_adversarial_loss(which_model, out_fake  = None, out_real = None):
 		final_loss = loss_fake
 	return final_loss
 
+def relativistic_average_discriminater(which_model, out_fake  = None, out_real = None):
+
+	diff_xr = out_real - out_fake.mean(axis = 0, keepdim = True)
+	diff_xf = out_fake - out_real.mean(axis = 0, keepdim = True)
+
+
+	if 'D' in which_model:
+		loss_fake = BCEWithLogitsLoss(diff_xf, torch.zeros_like(out_fake)) 
+		loss_real = BCEWithLogitsLoss(diff_xr, torch.ones_like(out_real)) 
+		final_loss = (loss_fake + loss_real)/2
+	elif 'G' in which_model:
+		loss_fake = BCEWithLogitsLoss(diff_xf, torch.ones_like(out_fake)) 
+		loss_real = BCEWithLogitsLoss(diff_xr, torch.zeros_like(out_real)) 
+		final_loss = (loss_fake + loss_real)/2
+	return final_loss
